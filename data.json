@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "sport": "NFL",
+    "away_team": "Patriots",
+    "home_team": "Eagles",
+    "away_spread": "-4.5",
+    "away_id": 1,
+    "home_spread": "+4.5",
+    "home_id": 2
+  },
+  {
+    "id": 2,
+    "sport": "NFL",
+    "away_team": "Vikings",
+    "home_team": "Eagles",
+    "away_spread": "+3",
+    "away_id": 1,
+    "home_spread": "-3",
+    "home_id": 2
+  },
+  {
+    "id": 3,
+    "sport": "NFL",
+    "away_team": "Jaguars",
+    "home_team": "Patriots",
+    "away_spread": "+8",
+    "away_id": 1,
+    "home_spread": "-8",
+    "home_id": 2
+  },
+]

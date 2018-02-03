@@ -1,0 +1,36 @@
+{
+  "name": "mvp_head2head",
+  "version": "1.0.0",
+  "description": "Sports gambling",
+  "main": "server/index.js",
+  "scripts": {
+    "react-dev": "webpack -d --watch",
+    "server-dev": "nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpencerCornelia/mvp_head2head.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SpencerCornelia/mvp_head2head/issues"
+  },
+  "homepage": "https://github.com/SpencerCornelia/mvp_head2head#readme",
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "jquery": "^3.3.1",
+    "mongoose": "^5.0.3",
+    "nodemon": "^1.14.12",
+    "path": "^0.12.7",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "request": "^2.83.0",
+    "webpack": "^3.10.0"
+  }
+}
