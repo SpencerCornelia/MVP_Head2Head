@@ -4,6 +4,7 @@ import { Router, Route, browserHistory } from 'react-router';
 
 import $ from 'jquery';
 import Games from './Games.jsx';
+import User from './User.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -55,6 +56,8 @@ class App extends Component {
     return (<div>
         <h1>Head 2 Head Sports Gambling</h1>
         <Games games={this.state.games} bet={this.placeBet.bind(this)}/>
+        <h1>User Component</h1>
+        <User />
       </div>
     );
   }
