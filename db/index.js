@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/head2head').then(
+mongoose.connect('mongodb://localhost/gambling').then(
   () => { console.log("successful DB connection") },
   err => { console.log("error with DB connection") }
 );
 
+
+/* ========== Game ========== */
 let gameSchema = mongoose.Schema({
   id: Number,
   sport: String,
@@ -17,41 +19,109 @@ let gameSchema = mongoose.Schema({
 
 let Game = mongoose.model('Game', gameSchema);
 
+let createGame = function(body) {
+  var newGame = new Game({
+    sport: 'NFL',
+    away_team: body.away_team,
+    home_team: body.home_team,
+    away_spread: body.away_spread,
+    away_id: body.away_id,
+    home_spread: body.home_spread,
+    home_id: body.home_id
+  });
+
+  newGame.save((err) => {
+    if (err) {
+      console.log("error saving newGame to db");
+    }
+  });
+};
+
+let allNFLGames = function(cb) {
+  Game.find({sport: 'NFL'}).exec(cb);
+};
+
+
+/* ========== USER ========== */
 let userSchema = mongoose.Schema({
   id: Number,
   username: String,
   bankroll: Number,
   bets: [{
     "gameID": Number,
-    "teamID": Number,
+    "teamName": String,
     "wagerAmount": Number
   }]
 });
 
 let User = mongoose.model('User', userSchema);
 
-let allNFLGames = function(cb) {
-  Game.find({sport: 'NFL'}).exec(cb);
+let createUser = function(username, bankroll) {
+  var newUser = new User({
+    "username": username,
+    "bankroll": bankroll,
+    "bets": []
+  });
+
+  newUser.save((err) => {
+    if (err) {
+      console.log("error saving newUser to db");
+    }
+  });
 };
 
-// use this to create games for test data
-// let saveGame = function(body) {
-//   var newGame = new Game({
-//     sport: 'NFL',
-//     away_team: body.away_team,
-//     home_team: body.home_team,
-//     away_spread: body.away_line,
-//     home_spread: body.home_line,
-//     away_id: body.away_team_id,
-//     home_id: body.home_team_id
-//   });
+let updateUser = function(username, body) {
+  User.findOne({"username": username}, (err, user)  => {
+    if (err) {
+      console.log("error finding user in updateUser");
+    } else {
+      user.username = username,
+      user.bankroll = body.bankroll,
+      user.bets = body.bets
+    }
+  });
+}
 
-//   newGame.save((err) => {
-//     if (err) {
-//       console.log('error saving newGame to db')
-//     }
-//   })
-// }
+let addBet = function(username, bet) {
+  User.findOne({"username": username}, (err, user) => {
+    if (err) {
+      console.log("error finding user to addBet");
+    } else {
+      console.log("bet in addBet =", bet)
+      user.bets.push(bet);
+      console.log("user.bets =", user.bets)
+      user.bankroll = user.bankroll - bet.wagerAmount;
+      user.save((err, updatedUser) => {
+        if (err) {
+          console.log("error adding bet to user");
+        } else {
+          console.log("updated user's bets.");
+        }
+      });
+    }
+  });
+};
 
-// module.exports.saveGame = saveGame;
+let getUserBets = function(username, cb) {
+  User.findOne({"username": username}, (err, user) => {
+    if (err) {
+      console.log("error finding user in getUserBets");
+    } else {
+      cb(user);
+    }
+  });
+};
+
+let getAllUsers = function(cb) {
+  User.find({}, (err, users) => {
+    cb(users);
+  });
+};
+
+module.exports.createGame = createGame;
 module.exports.allNFLGames = allNFLGames;
+module.exports.createUser = createUser;
+module.exports.updateUser = updateUser;
+module.exports.addBet = addBet;
+module.exports.getUserBets = getUserBets;
+module.exports.getAllUsers = getAllUsers;
