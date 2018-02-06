@@ -16,7 +16,8 @@ class User extends Component {
     //     ]
     //   }
     this.state = {
-      user: {}
+      user: {},
+      bets: []
     }
     this.renderBets();
   }
@@ -27,9 +28,9 @@ class User extends Component {
       method: 'GET',
       contentType: 'application/json',
       success: function(data) {
-        console.log("data =", data)
         this.setState({
-          user: data
+          user: data,
+          bets: data.bets
         });
       }.bind(this),
       error: function(err) {
@@ -44,14 +45,12 @@ class User extends Component {
         <div>User ID: {this.state.user._id}</div>
         <div>Username: {this.state.user.username}</div>
         <div>Bankroll: {this.state.user.bankroll}</div>
-        <div>Bets: {this.state.user.bets === undefined ? '' : this.state.user.bets.forEach((bet) => {
+        <div>Bets: </div>
+        {this.state.bets.map((bet) =>
           <div>
-          <div>BetId: bet._id</div>
-          <div>GameID: bet.gameID</div>
-          <div>TeamName: bet.teamName</div>
-          <div>Wager: bet.wagerAmount</div>
+            <div>{bet.wagerAmount}</div>
           </div>
-        })}</div>
+        )}
       </div>
     )
   }
