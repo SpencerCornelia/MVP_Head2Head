@@ -15,6 +15,7 @@ app.engine('jsx', require('express-render-jsx'));
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 /* ======== start AUTHENTICATION ROUTES ========== */
 app.get('/login', function(req, res) {
@@ -26,10 +27,16 @@ app.get('/signup', function(req, res) {
   let html = ReactDOMServer.renderToString('Signup');
   res.send(html);
 });
+
+app.post('/signup', function(req, res) {
+  db.createUser(req.body.username, req.body.bankroll);
+  res.send("success");
+});
 /* ======== end AUTHENTICATION ROUTES ========== */
 
 app.post('/createGame', function(req, res) {
-  db.saveGame(req.body);
+  db.createGame(req.body);
+  res.send("success");
 });
 
 app.get('/nflGames', function(req, res) {
@@ -39,7 +46,25 @@ app.get('/nflGames', function(req, res) {
 });
 
 app.post('/placeUserBet', function(req, res) {
-  // get user from req.session.username
+  db.addBet(req.body.username, req.body.bet);
+  res.send("success");
+});
+
+app.get('/users', function(req, res) {
+  db.getAllUsers((users) => {
+    res.json(users);
+  });
+});
+
+app.post('/updateUser', function(req, res) {
+  db.updateUser('scornelia', req.body);
+  res.send("success");
+});
+
+app.get('/getUserBets/:username', function(req, res) {
+  db.getUserBets(req.params.username, (user) => {
+    res.json(user);
+  });
 });
 
 let port = 3000;
