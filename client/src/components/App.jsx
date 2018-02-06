@@ -21,7 +21,6 @@ class App extends Component {
       method: 'GET',
       contentType: 'application/json',
       success: function(data) {
-        console.log("data =", data)
         this.setState({
           games: data
         });
