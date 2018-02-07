@@ -10,9 +10,28 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      games: []
+      games: [],
+      user: {},
+      bets: []
     }
     this.getGames();
+  }
+
+  componentDidMount() {
+    $.ajax({
+      url: 'http://localhost:3000/getUserBets/scornelia',
+      method: 'GET',
+      contentType: 'application/json',
+      success: function(data) {
+        this.setState({
+          user: data,
+          bets: data.bets
+        });
+      }.bind(this),
+      error: function(err) {
+        console.log("error in get request to repos. err =", err);
+      }
+    });
   }
 
   getGames() {
@@ -31,19 +50,22 @@ class App extends Component {
     });
   }
 
-  placeBet(gameID, teamID, wager) {
+  placeBet(gameID, teamName, wager) {
     let betData = {
       gameID: gameID,
-      teamID: teamID,
+      teamName: teamName,
       wager: wager
     };
     $.ajax({
       url: 'http://localhost:3000/placeUserBet',
-      data: betData,
+      data: JSON.stringify(betData),
       method: 'POST',
       contentType: 'application/json',
       success: function(data) {
-
+        this.setState({
+          user: data,
+          bets: data.bets
+        });
       }.bind(this),
       error: function(err) {
         console.log("error in POST request to placeUserBet");
@@ -56,7 +78,7 @@ class App extends Component {
         <h1>Head 2 Head Sports Gambling</h1>
         <Games games={this.state.games} bet={this.placeBet.bind(this)}/>
         <h1>User Component</h1>
-        <User />
+        <User currentUser={this.state.user} bets={this.state.bets} />
       </div>
     );
   }
