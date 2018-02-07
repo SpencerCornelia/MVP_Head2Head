@@ -48,7 +48,7 @@ let userSchema = mongoose.Schema({
   username: String,
   bankroll: Number,
   bets: [{
-    "gameID": Number,
+    "gameID": String,
     "teamName": String,
     "wagerAmount": Number
   }]
@@ -82,20 +82,24 @@ let updateUser = function(username, body) {
   });
 }
 
-let addBet = function(username, bet) {
+let addBet = function(username, bet, cb) {
   User.findOne({"username": username}, (err, user) => {
     if (err) {
       console.log("error finding user to addBet");
     } else {
-      console.log("bet in addBet =", bet)
-      user.bets.push(bet);
-      console.log("user.bets =", user.bets)
-      user.bankroll = user.bankroll - bet.wagerAmount;
+      let updateBet = {
+        "gameID": parseInt(bet.gameID),
+        "teamName": bet.teamName,
+        "wagerAmount": parseInt(bet.wager)
+      }
+      user.bets.push(updateBet);
+      user.bankroll = user.bankroll - updateBet.wagerAmount;
       user.save((err, updatedUser) => {
         if (err) {
-          console.log("error adding bet to user");
+          console.log("error adding bet to user, err=", err);
         } else {
           console.log("updated user's bets.");
+          cb(updatedUser);
         }
       });
     }
