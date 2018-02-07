@@ -34,6 +34,9 @@ app.post('/signup', function(req, res) {
 });
 /* ======== end AUTHENTICATION ROUTES ========== */
 
+// use scornelia for testing data
+var username = 'scornelia';
+
 app.post('/createGame', function(req, res) {
   db.createGame(req.body);
   res.send("success");
@@ -46,8 +49,9 @@ app.get('/nflGames', function(req, res) {
 });
 
 app.post('/placeUserBet', function(req, res) {
-  db.addBet(req.body.username, req.body.bet);
-  res.send("success");
+  db.addBet(username, req.body, (user) => {
+    res.send(user);
+  });
 });
 
 app.get('/users', function(req, res) {
@@ -57,7 +61,7 @@ app.get('/users', function(req, res) {
 });
 
 app.post('/updateUser', function(req, res) {
-  db.updateUser('scornelia', req.body);
+  db.updateUser(username, req.body);
   res.send("success");
 });
 
