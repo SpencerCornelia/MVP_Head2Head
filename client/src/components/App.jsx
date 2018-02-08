@@ -13,14 +13,16 @@ class App extends Component {
     this.state = {
       games: [],
       user: {},
-      bets: []
+      bets: [],
+      hasError: false,
+      errorMessage: ''
     }
     this.getGames();
   }
 
   componentDidMount() {
     $.ajax({
-      url: 'http://localhost:3000/getUserBets/scornelia',
+      url: 'http://localhost:3000/getUserBets/betterSpencer',
       method: 'GET',
       contentType: 'application/json',
       success: function(data) {
@@ -30,8 +32,16 @@ class App extends Component {
         });
       }.bind(this),
       error: function(err) {
-        console.log("error in get request to repos. err =", err);
-      }
+        this.setState({
+          hasError: true
+        });
+      }.bind(this)
+    });
+  }
+
+  componentDidCatch(error, info) {
+    this.setState({
+      hasError: true
     });
   }
 
@@ -46,7 +56,9 @@ class App extends Component {
         });
       }.bind(this),
       error: function(err) {
-        console.log("error in get request to repos. err =", err);
+        this.setState({
+          hasError: true
+        });
       }
     });
   }
@@ -69,22 +81,50 @@ class App extends Component {
         });
       }.bind(this),
       error: function(err) {
-        console.log("error in POST request to placeUserBet");
-      }
+        this.setState({
+          hasError: true,
+          errorMessage: err.message
+        });
+      }.bind(this)
+    });
+    setTimeout(() => {
+      this.checkWinner(betData);
+    }, 5000);
+  }
+
+  checkWinner(betData) {
+    $.ajax({
+      url: "http://localhost:3000/checkWinner",
+      data: JSON.stringify(betData),
+      method: 'POST',
+      contentType: 'application/json',
+      success: function(data) {
+        alert(data.message)
+        this.setState({
+          user: data.user
+        });
+      }.bind(this),
+      error: function(err) {
+        console.log("err =", err);
+      }.bind(this)
     });
   }
 
   render() {
-    return (<div>
-        <h1>Head 2 Head Sports Gambling</h1>
-        <Games games={this.state.games} bet={this.placeBet.bind(this)}/>
-        <h1>User Component</h1>
-        <User currentUser={this.state.user} bets={this.state.bets} />
-        {this.state.bets.map((bet) => {
-          return <Bet bet={bet} key={bet._id} />
-        })}
-      </div>
-    );
+    if (this.state.hasError) {
+      return <div>Error. Refresh the page</div>
+    } else {
+      return (<div>
+          <h1>Head 2 Head Sports Gambling</h1>
+          <Games games={this.state.games} bet={this.placeBet.bind(this)}/>
+          <h1>User Component</h1>
+          <User currentUser={this.state.user} bets={this.state.bets} />
+          {this.state.bets.map((bet) => {
+            return <Bet bet={bet} key={bet._id} />
+          })}
+        </div>
+      );
+    }
   }
 }
 
