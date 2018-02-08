@@ -86,6 +86,7 @@ let addBet = function(username, bet, cb) {
   User.findOne({"username": username}, (err, user) => {
     if (err) {
       console.log("error finding user to addBet");
+      cb({'result': 'error', 'message': err}, true);
     } else {
       let updateBet = {
         "gameID": parseInt(bet.gameID),
@@ -99,9 +100,66 @@ let addBet = function(username, bet, cb) {
           console.log("error adding bet to user, err=", err);
         } else {
           console.log("updated user's bets.");
-          cb(updatedUser);
+          cb(updatedUser, false);
         }
       });
+    }
+  });
+};
+
+let checkWinner = function(username, bet, cb) {
+  User.findOne({"username": username}, (err, user) => {
+    if (err) {
+      console.log("error finding user in checkWinner");
+    } else {
+      if (bet.gameID === '5a79328cb03ef73aba97d015' && bet.teamName === 'Browns') {
+        user.bankroll = user.bankroll += parseInt(bet.wager);
+        user.save((err, user) => {
+          if (err) {
+            console.log("error adding user in checkWinner, err=", err);
+          } else {
+            cb(user, true);
+          }
+        });
+      } else if (bet.gameID === '5a7932b9b03ef73aba97d018' && bet.teamName === 'Titans') {
+        user.bankroll = user.bankroll += parseInt(bet.wager);
+        user.save((err, user) => {
+          if (err) {
+            console.log("error adding user in checkWinner");
+          } else {
+            cb(user, true);
+          }
+        });
+      } else if (bet.gameID === '5a793252b03ef73aba97d014' && bet.teamName === 'Patriots') {
+        user.bankroll = user.bankroll += parseInt(bet.wager);
+        user.save((err, user) => {
+          if (err) {
+            console.log("error adding user in checkWinner");
+          } else {
+            cb(user, true);
+          }
+        });
+      } else if (bet.gameID === '5a7932a9b03ef73aba97d017' && bet.teamName === 'Texans') {
+        user.bankroll = user.bankroll += parseInt(bet.wager);
+        user.save((err, user) => {
+          if (err) {
+            console.log("error adding user in checkWinner");
+          } else {
+            cb(user, true);
+          }
+        });
+      } else if (bet.gameID === '5a793299b03ef73aba97d016' && bet.teamName === 'Cardinals') {
+        user.bankroll = user.bankroll += parseInt(bet.wager);
+        user.save((err, user) => {
+          if (err) {
+            console.log("error adding user in checkWinner");
+          } else {
+            cb(user, true);
+          }
+        });
+      } else {
+        cb(user, false);
+      }
     }
   });
 };
@@ -127,5 +185,6 @@ module.exports.allNFLGames = allNFLGames;
 module.exports.createUser = createUser;
 module.exports.updateUser = updateUser;
 module.exports.addBet = addBet;
+module.exports.checkWinner = checkWinner;
 module.exports.getUserBets = getUserBets;
 module.exports.getAllUsers = getAllUsers;
