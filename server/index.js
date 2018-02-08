@@ -34,8 +34,8 @@ app.post('/signup', function(req, res) {
 });
 /* ======== end AUTHENTICATION ROUTES ========== */
 
-// use scornelia for testing data
-var username = 'scornelia';
+// use for testing data
+var username = 'betterSpencer';
 
 app.post('/createGame', function(req, res) {
   db.createGame(req.body);
@@ -49,8 +49,12 @@ app.get('/nflGames', function(req, res) {
 });
 
 app.post('/placeUserBet', function(req, res) {
-  db.addBet(username, req.body, (user) => {
-    res.send(user);
+  db.addBet(username, req.body, (user, error) => {
+    if (error) {
+      res.status(500).send(user);
+    } else {
+      res.json(user);
+    }
   });
 });
 
@@ -68,6 +72,25 @@ app.post('/updateUser', function(req, res) {
 app.get('/getUserBets/:username', function(req, res) {
   db.getUserBets(req.params.username, (user) => {
     res.json(user);
+  });
+});
+
+app.post('/checkWinner', function(req, res) {
+  console.log("req.body =", req.body)
+  db.checkWinner(username, req.body, (user, winner) => {
+    if (winner) {
+      res.json({
+        'user': user,
+        'result': 'Win',
+        'message': 'Player won bet'
+      });
+    } else {
+      res.json({
+        'user': user,
+        'result': 'Loss',
+        'message': 'Player lost bet'
+      });
+    }
   });
 });
 
