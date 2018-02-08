@@ -5,6 +5,7 @@ import { Router, Route, browserHistory } from 'react-router';
 import $ from 'jquery';
 import Games from './Games.jsx';
 import User from './User.jsx';
+import Bet from './Bet.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -79,9 +80,28 @@ class App extends Component {
         <Games games={this.state.games} bet={this.placeBet.bind(this)}/>
         <h1>User Component</h1>
         <User currentUser={this.state.user} bets={this.state.bets} />
+        {this.state.bets.map((bet) => {
+          return <Bet bet={bet} key={bet._id} />
+        })}
       </div>
     );
   }
 }
 
 export default App;
+
+/*
+  render() {
+    return (<div>
+        <h1>Head 2 Head Sports Gambling</h1>
+        <Games games={this.state.games} bet={this.placeBet.bind(this)}/>
+        <h1>User Component</h1>
+        <User currentUser={this.state.user} />
+        {this.state.bets.map((bet) => {
+          return <Bet bet={bet} key={bet._id} />
+        })}
+      </div>
+    );
+  }
+
+*/
