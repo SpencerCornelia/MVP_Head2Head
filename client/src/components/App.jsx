@@ -89,19 +89,3 @@ class App extends Component {
 }
 
 export default App;
-
-/*
-  render() {
-    return (<div>
-        <h1>Head 2 Head Sports Gambling</h1>
-        <Games games={this.state.games} bet={this.placeBet.bind(this)}/>
-        <h1>User Component</h1>
-        <User currentUser={this.state.user} />
-        {this.state.bets.map((bet) => {
-          return <Bet bet={bet} key={bet._id} />
-        })}
-      </div>
-    );
-  }
-
-*/
